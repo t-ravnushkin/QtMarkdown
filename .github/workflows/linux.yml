@@ -14,7 +14,7 @@ jobs:
           python-version: "3.8"
       - name: install qt6
         run: |
-          sudo apt-get install -y libgl1-mesa-dev libxkbcommon-x11-0 libxcb-cursor-dev
+          sudo apt-get install -y libgl1-mesa-dev libxkbcommon-x11-0 libxcb-cursor-dev libx11-dev
           pip install aqtinstall
           python3 -m aqt install-qt -O ${{ github.workspace }}/Qt/ linux desktop 6.5.0
           echo ${{ github.workspace }}/Qt/6.5.0/gcc_64/bin/ >> $GITHUB_PATH
