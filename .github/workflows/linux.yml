@@ -1,0 +1,39 @@
+name: Build AppImage
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  job_1:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      - name: install qt6
+        run: |
+          pip install aqtinstall
+          python3 -m aqt install-qt -O ${{ github.workspace }}/Qt/ linux desktop 6.5.0
+          echo ${{ github.workspace }}/Qt/6.5.0/gcc_64/bin/ >> $GITHUB_PATH
+      - name: build
+        run: |
+          qmake6 multiwindowMarkdown.pro
+          make
+          make clean
+          mv multiwindowMarkdown build/multiwindowMarkdown
+      - name: appimage
+        run: |
+          cd build
+          wget -O deploy.AppImage https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+          chmod +x deploy.AppImage
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{ github.workspace }}/Qt/6.5.0/gcc_64/lib
+          ./deploy.AppImage multiwindowMarkdown -no-translations -bundle-non-qt-libs
+          ./deploy.AppImage multiwindowMarkdown -no-translations -appimage
+          mv Markdown_Editor*.AppImage multiwindowMarkdown-x86_64.AppImage
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: multiwindowMarkdown-x86_64.AppImage
+          path: ./build/multiwindowMarkdown-x86_64.AppImage

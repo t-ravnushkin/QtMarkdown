@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Markdown Editor
+Exec=AppRun %F
+Icon=default
+Categories=Office;
+X-AppImage-Version=ee5ce81
